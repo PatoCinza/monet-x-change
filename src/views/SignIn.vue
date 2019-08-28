@@ -31,10 +31,6 @@ export default {
         this.$router.push('/dashboard')
       }
     }
-  },
-  mounted () {
-    const hasActiveUser = window.sessionStorage.getItem('activeUser')
-    if (hasActiveUser) this.$router.push('/dashboard')
   }
 }
 </script>
