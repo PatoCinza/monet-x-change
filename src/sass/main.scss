@@ -1,0 +1,38 @@
+@import './_variables.scss';
+
+body {
+  background: #e9e9e9;
+  margin: 0;
+}
+
+.signup,
+.signin {
+  max-width: 300px;
+  margin: 5rem auto;
+  padding: 2.5rem;
+  background: $pureWhite;
+  border-radius: 0.5rem;
+
+  @include mobile {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 0;
+    height: 100%;
+  }
+
+  h1 {
+    font-size: 2rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .login-footer {
+    color: $prettyGray;
+    text-align: center;
+
+    a {
+      color: $emerald;
+      cursor: pointer;
+    }
+  }
+}
