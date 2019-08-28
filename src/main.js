@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+import './sass/reset.scss'
 import './sass/_variables.scss'
 import './sass/main.scss'
 

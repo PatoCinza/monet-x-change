@@ -88,10 +88,30 @@ export function login (username, password) {
 }
 
 /**
+ * removes active user from session storage
+ * @returns { undefined } User if found, null otherwise
+ */
+export function logout () {
+  window.sessionStorage.removeItem('activeUser')
+}
+
+/**
  * Sets user as active by putting him in activeUser on session
  * @param { User } user user logging in
  * @returns { undefined }
  */
 function setActiveUser (user) {
   window.sessionStorage.setItem('activeUser', JSON.stringify(user))
+}
+
+/**
+ * gets active user from session storage
+ * @returns { String } user's username or empty string
+ */
+export function getActiveUser () {
+  try {
+    return JSON.parse(window.sessionStorage.getItem('activeUser')).username
+  } catch (e) {
+    return ''
+  }
 }
