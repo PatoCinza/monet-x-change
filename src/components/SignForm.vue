@@ -42,13 +42,13 @@ form {
   }
 
   span {
-    color: $tomato;
+    color: $solidRed;
   }
 
   input {
     margin-bottom: 2rem;
     padding: 0.5rem 1rem;
-    border: 1px solid $silver;
+    border: 1px solid $lightGray;
     border-radius: 0.25rem;
 
     &:last-of-type {
@@ -69,7 +69,7 @@ form {
     padding: 0.5rem;
     color: $pureWhite;
     font-size: 1.25rem;
-    background: $emerald;
+    background: $solidGreen;
     border: none;
     border-radius: 0.25rem;
     cursor: pointer;
