@@ -59,8 +59,7 @@ export default {
       activeUsername: '',
       currenciesInfo: [],
       datacollection: {},
-      apiUrl: 'https://api.hgbrasil.com/finance?format=json-cors&key=07ada44c',
-      mock: 'http://localhost/mock.json'
+      apiUrl: 'https://api.hgbrasil.com/finance?format=json-cors&key=07ada44c'
     }
   },
   components: {

@@ -33,11 +33,3 @@ export async function chainRec (recursiveChainner, initialValue = Promise.resolv
 
   return step.value
 }
-
-/**
- * Returns identity of param
- * @param { T } x anything
- * @returns { T } x
- * @template T
- */
-export function identity (x) { return x }
