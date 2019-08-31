@@ -59,7 +59,7 @@ export default {
       activeUsername: '',
       currenciesInfo: [],
       datacollection: {},
-      apiUrl: 'https://api.hgbrasil.com/finance?format=json-cors&key=07ada44c'
+      apiUrl: 'https://api.hgbrasil.com/finance?format=json-cors&key=a97d6e4d'
     }
   },
   components: {
