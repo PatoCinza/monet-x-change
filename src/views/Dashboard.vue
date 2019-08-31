@@ -78,7 +78,7 @@ export default {
               ...currency,
               format: currency.format || [ 'BRL', 'pt_BR' ],
               active: !index,
-              valueHistory: [...getValueHistory(currency.name), currency.buy || currency.last]
+              valueHistory: getValueHistory(currency.name)
             }
           })
         ).then(currencies => {
