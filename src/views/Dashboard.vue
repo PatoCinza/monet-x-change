@@ -27,7 +27,6 @@
         }"
         :height="Number(275)"
       ></line-chart>
-      <button @click="fillData()">Randomize</button>
     </section>
 
     <section class="cards">
@@ -36,6 +35,7 @@
         v-for="info in currenciesInfo"
         :key="info.name"
         :name="info.name"
+        :format="info.format"
         :value="info.buy || info.last"
         :variation="info.variation"
         :isActive="info.active"
@@ -45,10 +45,12 @@
 </template>
 
 <script>
-import { getActiveUser, logout } from '../utils/user'
 import CurrencyCard from '../components/CurrencyCard.vue'
 import Chart from '../components/Chart'
 import axios from 'axios'
+import { getActiveUser, logout, setActiveUser } from '../utils/user'
+import { setValueHistory, getValueHistory } from '../utils/currencyHistory'
+import { chainRec } from '../utils/functional'
 
 export default {
   name: 'dashboard',
@@ -56,7 +58,9 @@ export default {
     return {
       activeUsername: '',
       currenciesInfo: [],
-      datacollection: null
+      datacollection: {},
+      apiUrl: 'https://api.hgbrasil.com/finance?format=json-cors&key=07ada44c',
+      mock: 'http://localhost/mock.json'
     }
   },
   components: {
@@ -64,29 +68,54 @@ export default {
     'line-chart': Chart
   },
   created () {
-    axios.get('http://localhost/mock.json')
-      .then(({ data }) => ({ ...data.results.currencies, ...data.results.bitcoin }))
-      .then(currencies => Object.values(currencies)
-        .filter(currency => typeof currency === 'object')
-        .map((currency, index) => ({ ...currency, active: !index }))
-      ).then(currencies => {
-        this.currenciesInfo = currencies
-        console.log(this.currenciesInfo)
-        this.changeChart(true, this.currenciesInfo[0].name)
-      })
+    chainRec((done, next, value) => next(
+      axios.get(this.apiUrl)
+        .then(({ data }) => ({ ...data.results.currencies, ...data.results.bitcoin }))
+        .then(currencies => Object.values(currencies)
+          .filter(currency => typeof currency === 'object')
+          .map((currency, index) => {
+            setValueHistory(currency.name, currency.buy || currency.last)
+            return {
+              ...currency,
+              format: currency.format || [ 'BRL', 'pt_BR' ],
+              active: !index,
+              valueHistory: [...getValueHistory(currency.name), currency.buy || currency.last]
+            }
+          })
+        ).then(currencies => {
+          this.currenciesInfo = currencies
+          this.changeChart(true, this.currenciesInfo[0].name)
+        }).then(_ => new Promise(resolve => {
+          setTimeout(resolve, 1000 * 5 * 60)
+        }))
+        .catch(() => {
+          return new Promise(resolve => {
+            setTimeout(resolve, 1000 * 5 * 60)
+          })
+        })
+    ))
   },
   mounted () {
-    this.fillData()
-    this.activeUsername = getActiveUser()
-    if (!this.activeUsername) this.$router.push('/signin')
+    chainRec((done, next, value) => next(
+      new Promise(resolve => {
+        this.checkUserSession()
+      }).then(() => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 1000 * 1 * 60)
+        })
+      })
+    ))
   },
   methods: {
+    checkUserSession () {
+      this.activeUsername = getActiveUser()
+      if (!this.activeUsername) this.$router.push('/signin')
+    },
     logout () {
       logout()
       this.$router.push('signin')
     },
     fillData (currency) {
-      console.log(currency)
       this.datacollection = {
         labels: currency.valueHistory,
         datasets: [
@@ -97,16 +126,16 @@ export default {
         ]
       }
     },
-    getRandomInt () {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-    },
     changeChart (active, name) {
+      this.renewUserSession()
       this.currenciesInfo = this.currenciesInfo.map(currency => ({
         ...currency,
-        active: (name === currency.name && active),
-        valueHistory: [0, currency.buy || currency.last]
+        active: (name === currency.name && active)
       }))
       this.fillData(this.currenciesInfo.filter(currency => currency.active).shift())
+    },
+    renewUserSession () {
+      setActiveUser({ username: this.activeUsername })
     }
   }
 }
@@ -155,6 +184,11 @@ export default {
   grid-gap: 1rem;
 
   .card {
+    border: 2px solid #e9e9e9;
+    border-radius: 4px;
+    padding: .5rem;
+    background-color: $pureWhite;
+
     &:hover {
       border: 2px solid #777;
       border-radius: 4px;
@@ -164,10 +198,6 @@ export default {
       border: 2px solid #777;
       border-radius: 4px;
     }
-
-    border: 2px solid #e9e9e9;
-    border-radius: 4px;
-    padding: .5rem;
   }
 }
 

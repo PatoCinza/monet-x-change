@@ -100,8 +100,8 @@ export function logout () {
  * @param { User } user user logging in
  * @returns { undefined }
  */
-function setActiveUser (user) {
-  window.sessionStorage.setItem('activeUser', JSON.stringify(user))
+export function setActiveUser (user) {
+  window.sessionStorage.setItem('activeUser', JSON.stringify({ ...user, created: +new Date() }))
 }
 
 /**
@@ -110,8 +110,19 @@ function setActiveUser (user) {
  */
 export function getActiveUser () {
   try {
-    return JSON.parse(window.sessionStorage.getItem('activeUser')).username
+    const activeUser = JSON.parse(window.sessionStorage.getItem('activeUser'))
+    if (activeUser.created + 3600000 > +new Date()) {
+      return activeUser.username
+    } else {
+      throw Error('Session expired')
+    }
   } catch (e) {
     return ''
   }
 }
+
+/**
+ * @typedef { Object } User
+ * @prop { String } username users username
+ * @prop { String } password users password
+ */

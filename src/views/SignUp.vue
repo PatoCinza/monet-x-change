@@ -25,7 +25,6 @@ export default {
   methods: {
     registerUser: function (username, password) {
       const user = insertUser(username, password)
-      console.log(user)
       if (user) {
         login(username, password)
         this.$router.push('/dashboard')

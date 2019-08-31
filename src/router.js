@@ -12,7 +12,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'SignIn',
+      name: 'Root',
       component: SignIn
     }, {
       path: '/signin',

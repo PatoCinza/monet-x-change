@@ -3,7 +3,7 @@
     <span :class="positiveVariation ? 'positive' : 'negative'">
       {{ readableVariation }}
     </span>
-    <h2>R$ {{ readableValue }}</h2>
+    <h2>{{ readableValue }}</h2>
     <h3>{{ name }}</h3>
   </article>
 </template>
@@ -15,13 +15,10 @@ export default {
     name: String,
     value: Number,
     variation: Number,
+    format: Array,
     isActive: {
       type: Boolean,
       default: false
-    }
-  },
-  data () {
-    return {
     }
   },
   computed: {
@@ -32,7 +29,7 @@ export default {
       return `${this.positiveVariation ? '+' : '-'} ${Math.abs(this.variation)}`
     },
     readableValue: function () {
-      return this.value.toFixed(2).replace('.', ',')
+      return this.value.toLocaleString(this.format[1].replace('_', '-'), { style: 'currency', currency: this.format[0] })
     }
   },
   methods: {
